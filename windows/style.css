@@ -1,0 +1,32 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+.responsive-img {
+	max-width: 100%;
+  	height: auto;
+  	display: block;
+}
+
+button {
+    font-size: 2rem;
+    color: #666666;
+    background: none;
+    background-color: #f5f5f5;
+    border: #dcdcdc solid 2px;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1.2rem;
+    background-color: #efefef;
+    text-align: left;
+}

@@ -8,9 +8,8 @@ const os = require('os');
 const path = require('path');
 
 
-
-module.exports.screenshot = function() {
-
+// Takes a screenshot of the fullpage and return the screenshot as a NativeImage
+module.exports.screenshot = function(callback) {
     const thumbSize = determineScreenShotSize();
 
     let options = { types: ['screen'], thumbnailSize: thumbSize };
@@ -19,17 +18,12 @@ module.exports.screenshot = function() {
         if (error) return console.log(error);
 
         sources.forEach(function(source) {
-            if (source.name == 'Entire screen' || source.name == 'Screen 1') {
-                let blob = new Blob([source.thumbnail.toPng()], {'type': 'image/png'});
-                let url = URL.createObjectURL(blob);
-                document.getElementById('screenshot-image').src = url;
+            if (source.name === 'Entire screen' || source.name === 'Screen 1') {
+                callback(source.thumbnail);
             }
-        })
-
-    })
-
-
-}
+        });
+    });
+};
 
 function determineScreenShotSize () {
   const screenSize = electronScreen.getPrimaryDisplay().workAreaSize;

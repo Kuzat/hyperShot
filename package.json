@@ -12,13 +12,12 @@
   },
   "scripts": {
     "test": "xo",
-    "start": "electron .",
+    "start": "electron . --enable-transparent-visuals --disable-gpu",
     "build": "electron-packager . --out=dist --asar --overwrite --all"
   },
   "files": [
     "index.js",
-    "index.html",
-    "index.css"
+    "index.html"
   ],
   "keywords": [
     "electron-app",
