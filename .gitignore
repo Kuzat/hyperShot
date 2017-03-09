@@ -1,4 +1,5 @@
 .gitattributes
 .editorconfig
 node_modules
+/my_node_addon/build/*
 /dist
