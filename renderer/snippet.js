@@ -2,67 +2,67 @@ const ipc = require('electron').ipcRenderer;
 const remote = require('electron').remote;
 const screen = require('electron').screen;
 
-
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("here");
-    let startPos = {x: 0, y: 0};
-    let mouseDown = false;
-    let x1, y1, x2, y2;
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext("2d");
+	const startPos = {x: 0, y: 0};
+	const canvas = document.getElementById('canvas');
+	const context = canvas.getContext('2d');
 
-    //Setup the canvas to fit the screen.
-    canvas.width = screen.getPrimaryDisplay().bounds.width;
-    canvas.height = screen.getPrimaryDisplay().bounds.height;
+	let mouseDown = false;
+	let x1;
+	let y1;
+	let x2;
+	let y2;
 
-    // Fill the canvas.
-    context.fillStyle = "rgba(0, 0, 0, 0.5)";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+	// Setup the canvas to fit the screen.
+	canvas.width = screen.getPrimaryDisplay().bounds.width;
+	canvas.height = screen.getPrimaryDisplay().bounds.height;
 
-    document.onmousedown = function(event) {
-        mouseDown = true;
-        startPos.x = event.screenX;
-        startPos.y = event.screenY;
-    }
+	// Fill the canvas.
+	context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+	context.fillRect(0, 0, canvas.width, canvas.height);
 
-    document.onmousemove = function(event) {
-        console.log(event);
+	document.onmousedown = event => {
+		mouseDown = true;
+		startPos.x = event.clientX;
+		startPos.y = event.clientY;
+	};
 
+	document.onmousemove = event => {
+		console.log(event);
 
+		// Check if we have had a mouse down event.
+		if (mouseDown) {
+			// Fill old rectangle
+			context.fillRect(x1, y1, x2 - x1, y2 - y1);
 
-        //check if we have had a mouse down event.
-        if(mouseDown) {
-            // Fill old rectangle
-            context.fillRect(x1, y1, x2 - x1, y2 - y1);
+			// Calcualte the width and height
+			x1 = Math.min(startPos.x, event.clientX);
+			y1 = Math.min(startPos.y, event.clientY);
+			x2 = Math.max(startPos.x, event.clientX);
+			y2 = Math.max(startPos.y, event.clientY);
 
-            // Calcualte the width and height
-            x1 = Math.min(startPos.x, event.screenX);
-            y1 = Math.min(startPos.y, event.screenY);
-            x2 = Math.max(startPos.x, event.screenX);
-            y2 = Math.max(startPos.y, event.screenY);
+			// Remove background that is selected
+			context.clearRect(x1, y1, x2 - x1, y2 - y1);
+		}
+	};
 
-            // remove background that is selected
-            context.clearRect(x1, y1, x2- x1, y2 - y1);
-        }
-    }
+	document.onmouseup = event => {
+		console.log(event);
 
-    document.onmouseup = function(event) {
-        console.log(event);
-
-        // mouse no longer down
-        mouseDown = false;
-
-    }
+		// mouse no longer down
+		mouseDown = false;
+	};
 });
 
-document.onkeydown = function(evt) {
-    console.log("but what about here?");
-    evt = evt || window.event;
-    let isEscape = false;
-    if ('key' in evt) {
-        isEscape = (evt.key === 'Escape' || evt.key === 'Esc');
-    } else {
-        isEscape = (evt.keyCode == 27);
-    }
-    if (isEscape) remote.getCurrentWindow().close();
-}
+document.onkeydown = event => {
+	event = event || window.event;
+	let isEscape = false;
+	if ('key' in event) {
+		isEscape = (event.key === 'Escape' || event.key === 'Esc');
+	} else {
+		isEscape = (event.keyCode === 27);
+	}
+	if (isEscape) {
+		remote.getCurrentWindow().close();
+	}
+};

@@ -1,11 +1,10 @@
 'use strict';
+const path = require('path');
 const electron = require('electron');
 const settings = require('electron-settings');
+
 const globalShortcut = electron.globalShortcut;
 const ipc = electron.ipcMain;
-const Menu = electron.Menu;
-
-const path = require('path');
 
 // Seting default settings
 settings.defaults({
@@ -14,7 +13,7 @@ settings.defaults({
 		selectiveScreenshot: 'CommandOrControl+Shift+4',
 		windowScreenshot: 'CommandOrControl+Shift+5'
 	},
-	upload : {
+	upload: {
 		type: '0',
 		options: ['imgur', 'ftp', 'dont']
 	}
@@ -37,6 +36,7 @@ function createMainWindow() {
 	const win = new electron.BrowserWindow({
 		width: 600,
 		height: 400,
+		show: false,
 		icon: 'assets/64x64.png'
 	});
 
@@ -49,6 +49,7 @@ function createMainWindow() {
 	return win;
 }
 
+// Take screenshot
 function takeScreenshot(type, bounds = null) {
 	let win = new electron.BrowserWindow({
 		title: 'Preview window',
@@ -66,11 +67,11 @@ function takeScreenshot(type, bounds = null) {
 
 	win.webContents.openDevTools();
 
-	ipc.once('ready-for-command', (event, arg) => {
+	ipc.once('ready-for-command', () => {
 		event.sender.send('screenshot-type', type);
 	});
 
-	ipc.once('ready-for-show', (event, arg) => {
+	ipc.once('ready-for-show', () => {
 		win.show();
 	});
 
@@ -78,7 +79,7 @@ function takeScreenshot(type, bounds = null) {
 }
 
 function getBounds(callback) {
-	const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
+	const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize;
 	console.log(width + "  " + height);
 	let win = new electron.BrowserWindow({
 		title: 'snipper',
@@ -99,11 +100,14 @@ function getBounds(callback) {
 	win.on('ready-to-show', () => {
 		win.show();
 	});
+	win.on('ready-for-bounds', (event, arg) => {
+
+	});
 
 	win.webContents.openDevTools();
-
 }
 
+// ######### HANDLE APP EVENTS ###########
 app.on('will-quit', () => {
 	globalShortcut.unregisterAll();
 });
@@ -127,17 +131,16 @@ app.on('ready', () => {
 		// Full screenshot
 		globalShortcut.register(val.screenshot, () => {
 			takeScreenshot('screenshot');
-		 });
+		});
 		// Screenshot of selected area
 		globalShortcut.register(val.selectiveScreenshot, () => {
-			getBounds((bounds) => {
+			getBounds(bounds => {
 				takeScreenshot('selective-screenshot', bounds);
 			});
 		});
 		// Screenshot of active window
 		globalShortcut.register(val.windowScreenshot, () => {
 			takeScreenshot('window-screenshot');
-		 });
+		});
 	});
-
 });
