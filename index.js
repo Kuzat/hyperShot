@@ -2,9 +2,12 @@
 const path = require('path');
 const electron = require('electron');
 const settings = require('electron-settings');
+const screenshot = require('screenshot-node');
 
 const globalShortcut = electron.globalShortcut;
 const ipc = electron.ipcMain;
+const Menu = electron.Menu;
+const Tray = electron.Tray;
 
 // Seting default settings
 settings.defaults({
@@ -20,24 +23,25 @@ settings.defaults({
 });
 
 const app = electron.app;
+let appIcon = null;
 
-// adds debug features like hotkeys for triggering dev tools and reload
+// Adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')();
 
-// prevent window being garbage collected
+// Prevent window being garbage collected
 let mainWindow;
 
 function onClosed() {
-	// dereference the window
+	// Dereference the window
 	mainWindow = null;
 }
 
 function createMainWindow() {
 	const win = new electron.BrowserWindow({
-		width: 600,
-		height: 400,
+		width: 0,
+		height: 0,
 		show: false,
-		icon: 'assets/64x64.png'
+		icon: './assets/64x64.png'
 	});
 
 	const windowPath = path.join('file://', __dirname, 'index.html');
@@ -50,37 +54,37 @@ function createMainWindow() {
 }
 
 // Take screenshot
-function takeScreenshot(type, bounds = null) {
-	let win = new electron.BrowserWindow({
-		title: 'Preview window',
-		show: false,
-		minWidth: 800,
-		minHeigth: 600,
-		icon: 'assets/64x64.png'
+function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
+	screenshot.saveScreenshot(bounds.x, bounds.y, bounds.width, bounds.height, './assets/temp.png', err => {
+		if (err) {
+			console.log(err);
+		}
+
+		let win = new electron.BrowserWindow({
+			title: 'Preview window',
+			show: false,
+			width: size.width,
+			height: size.height,
+			icon: './assets/64x64.png'
+		});
+
+		const windowPath = path.join('file://', __dirname, 'windows/screenshot-preview.html');
+		win.loadURL(windowPath);
+		win.on('closed', () => {
+			win = null;
+		});
+
+		win.webContents.openDevTools();
+
+		ipc.once('ready-for-show', () => {
+			win.show();
+		});
+
+		return win;
 	});
-
-	const windowPath = path.join('file://', __dirname, 'windows/screenshot-preview.html');
-	win.loadURL(windowPath);
-	win.on('closed', () => {
-		win = null;
-	});
-
-	win.webContents.openDevTools();
-
-	ipc.once('ready-for-command', () => {
-		event.sender.send('screenshot-type', type);
-	});
-
-	ipc.once('ready-for-show', () => {
-		win.show();
-	});
-
-	return win;
 }
 
 function getBounds(callback) {
-	const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize;
-	console.log(width + "  " + height);
 	let win = new electron.BrowserWindow({
 		title: 'snipper',
 		fullscreen: true,
@@ -100,8 +104,8 @@ function getBounds(callback) {
 	win.on('ready-to-show', () => {
 		win.show();
 	});
-	win.on('ready-for-bounds', (event, arg) => {
-
+	ipc.once('ready-for-bounds', (event, arg) => {
+		callback(arg);
 	});
 
 	win.webContents.openDevTools();
@@ -127,20 +131,38 @@ app.on('activate', () => {
 app.on('ready', () => {
 	mainWindow = createMainWindow();
 
+	// A suitable size for the preview window
+	const size = {
+		width: electron.screen.getPrimaryDisplay().bounds.width * 0.65,
+		height: electron.screen.getPrimaryDisplay().bounds.height * 0.70
+	};
+
+	// TODO: Implement this properly.
+	// Testing tray
+	appIcon = new Tray('./assets/64x64.png');
+	const contextMenu = Menu.buildFromTemplate([
+		{label: 'Item1', type: 'radio'},
+		{label: 'Item2', type: 'radio'}
+	]);
+
+	contextMenu.items[1].checked = false;
+
+	appIcon.setContextMenu(contextMenu);
+
 	settings.get('hotkeys').then(val => {
 		// Full screenshot
 		globalShortcut.register(val.screenshot, () => {
-			takeScreenshot('screenshot');
+			takeScreenshot(size);
 		});
 		// Screenshot of selected area
 		globalShortcut.register(val.selectiveScreenshot, () => {
 			getBounds(bounds => {
-				takeScreenshot('selective-screenshot', bounds);
+				takeScreenshot(size, bounds);
 			});
 		});
 		// Screenshot of active window
 		globalShortcut.register(val.windowScreenshot, () => {
-			takeScreenshot('window-screenshot');
+			takeScreenshot(size);
 		});
 	});
 });

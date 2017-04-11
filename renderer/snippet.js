@@ -28,10 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	};
 
 	document.onmousemove = event => {
-		console.log(event);
-
 		// Check if we have had a mouse down event.
 		if (mouseDown) {
+			console.log(event);
+
 			// Fill old rectangle
 			context.fillRect(x1, y1, x2 - x1, y2 - y1);
 
@@ -48,9 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	document.onmouseup = event => {
 		console.log(event);
-
-		// mouse no longer down
+		console.log('Mouse up');
+		// Mouse no longer down
 		mouseDown = false;
+		ipc.send('ready-for-bounds', {x: x1, y: y1, width: x2 - x1, height: y2 - y1});
+		remote.getCurrentWindow().close();
 	};
 });
 
