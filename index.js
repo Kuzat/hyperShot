@@ -1,5 +1,7 @@
 'use strict';
 const path = require('path');
+const os = require('os');
+const fs = require('fs');
 const electron = require('electron');
 const settings = require('electron-settings');
 const screenshot = require('screenshot-node');
@@ -31,6 +33,16 @@ require('electron-debug')();
 // Prevent window being garbage collected
 let mainWindow;
 
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+	// Someone tried to run a second instance
+	// Should maybe open the main window or flash the tray to
+	// indicate that there allready is an app running.
+});
+
+if (shouldQuit) {
+	app.quit();
+}
+
 function onClosed() {
 	// Dereference the window
 	mainWindow = null;
@@ -44,11 +56,7 @@ function createMainWindow() {
 		icon: './assets/64x64.png'
 	});
 
-	const windowPath = path.join('file://', __dirname, 'index.html');
-	win.loadURL(windowPath);
 	win.on('closed', onClosed);
-
-	win.webContents.openDevTools();
 
 	return win;
 }
@@ -84,16 +92,19 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 	});
 }
 
+// Get screenshot bounds
 function getBounds(callback) {
 	let win = new electron.BrowserWindow({
 		title: 'snipper',
 		fullscreen: true,
+		width: electron.screen.getPrimaryDisplay().bounds.width,
+		height: electron.screen.getPrimaryDisplay().bounds.height,
 		transparent: true,
 		frame: false,
 		alwaysOnTop: true,
 		skipTaskbar: true,
 		resizeable: false,
-		show: false
+		show: false,
 	});
 
 	const windowPath = path.join('file://', __dirname, 'windows/snippet.html');
@@ -109,6 +120,19 @@ function getBounds(callback) {
 	});
 
 	win.webContents.openDevTools();
+}
+
+function saveFile() {
+	electron.dialog.showSaveDialog({title: 'Save File', defaultPath: os.homedir()+'/.png'}, filename => {
+		// Check to see if it is undefine (User closed dialog window)
+		if(filename != undefined) {
+		fs.createReadStream('./assets/temp.png').pipe(fs.createWriteStream(filename));
+		}
+	});
+}
+
+function copyImage() {
+	electron.clipboard.writeImage('./assets/temp.png');
 }
 
 // ######### HANDLE APP EVENTS ###########
@@ -132,23 +156,99 @@ app.on('ready', () => {
 	mainWindow = createMainWindow();
 
 	// A suitable size for the preview window
-	const size = {
-		width: electron.screen.getPrimaryDisplay().bounds.width * 0.65,
-		height: electron.screen.getPrimaryDisplay().bounds.height * 0.70
-	};
+	let size = null;
+	if (!shouldQuit) {
+		size = {
+			width: electron.screen.getPrimaryDisplay().bounds.width * 0.65,
+			height: electron.screen.getPrimaryDisplay().bounds.height * 0.70
+		};
+	}
 
-	// TODO: Implement this properly.
-	// Testing tray
+	// Tray icon Menu. Click functions needs to be implemented
 	appIcon = new Tray('./assets/64x64.png');
 	const contextMenu = Menu.buildFromTemplate([
-		{label: 'Item1', type: 'radio'},
-		{label: 'Item2', type: 'radio'}
+		{label: 'Open Window'},
+		{
+			label: 'Take Selective Screenshot',
+			click() {
+				getBounds(bounds => {
+					takeScreenshot(size, bounds);
+				});
+			}
+		},
+		{
+			label: 'Take Screenshot',
+			click() {
+				takeScreenshot(size);
+			}
+		},
+		{type: 'separator'},
+		{label: 'Settings'},
+		{label: 'About'},
+		{label: 'Quit', role: 'quit'}
 	]);
 
-	contextMenu.items[1].checked = false;
+	// Application Menu
+	const appMenu = Menu.buildFromTemplate([
+		{
+			label: 'File',
+			submenu: [
+				{
+					label: 'Save',
+					accelerator: 'CommandOrControl+S',
+					click: saveFile
+				},
+				{
+					label: 'Save As...',
+					click: saveFile
+				},
+				{
+					label: 'Close Window',
+					role: 'close'
+				}
+			]
+		},
+		{
+			label: 'Edit',
+			submenu: [
+				{
+					label: 'Copy',
+					accelerator: 'CommandOrControl+C',
+					click: copyImage
+				}
+			]
+		},
+		{
+			label: 'Help',
+			submenu: [
+				{
+					label: 'Version ' + app.getVersion(),
+					enabled: false
+				},
+				{
+					label: 'Report an Issue...',
+					click() {
+						electron.shell.openExternal("https://github.com/Kuzat/hyperdesktopjs/issues/new")
+					}
+				},
+				{
+					label: 'About Hyperdesktopjs',
+					click() {
+						electron.shell.openExternal("https://github.com/Kuzat/hyperdesktopjs");
+					}
+				}
+			]
+		}
+	])
 
+	// Set the application menu
+	Menu.setApplicationMenu(appMenu);
+
+
+	// Set the context menu for the tray icon
 	appIcon.setContextMenu(contextMenu);
 
+	// Set the global hotkeys to the different screenshot methods
 	settings.get('hotkeys').then(val => {
 		// Full screenshot
 		globalShortcut.register(val.screenshot, () => {
@@ -160,9 +260,10 @@ app.on('ready', () => {
 				takeScreenshot(size, bounds);
 			});
 		});
-		// Screenshot of active window
-		globalShortcut.register(val.windowScreenshot, () => {
+		// TODO: Screenshot of active window
+/*		globalShortcut.register(val.windowScreenshot, () => {
 			takeScreenshot(size);
 		});
+*/
 	});
 });

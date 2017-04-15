@@ -1,7 +1,9 @@
 const ipc = require('electron').ipcRenderer;
 const remote = require('electron').remote;
+const clipboard = require('electron').clipboard;
 
 document.addEventListener('DOMContentLoaded', () => {
+	let ctrlDown = false;
 	ipc.send('ready-for-show', true);
 
 	// Handle button clicks
@@ -16,4 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
 		// TODO: Make a new setting for different upload features.
 		console.log('Uploading...');
 	});
+
+	window.addEventListener('keydown', (event) => {
+		if (event.keyCode === 17 || event.keyCode === 91) {
+			ctrlDown = true;
+		}
+
+		if (ctrlDown && event.keyCode === 67) {
+			clipboard.writeImage('./assets/temp.png');
+		}
+
+	})
+
+	window.addEventListener('keyup', (event) => {
+		if (event.keyCode === 17 || event.keyCode === 91) {
+			ctrlDown = false;
+		}
+	})
 });
