@@ -17,8 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		// TODO: Implement uploading function.
 		// TODO: Make a new setting for different upload features.
 		console.log('Uploading...');
+		ipc.send('ready-for-upload');
+		remote.getCurrentWindow().hide();
+		
 	});
 
+	// Keybinding to copy image
 	window.addEventListener('keydown', (event) => {
 		if (event.keyCode === 17 || event.keyCode === 91) {
 			ctrlDown = true;

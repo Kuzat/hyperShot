@@ -2,6 +2,7 @@
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+const imgur = require('imgur');
 const electron = require('electron');
 const settings = require('electron-settings');
 const screenshot = require('screenshot-node');
@@ -19,8 +20,8 @@ settings.defaults({
 		windowScreenshot: 'CommandOrControl+Shift+5'
 	},
 	upload: {
-		type: '0',
-		options: ['imgur', 'ftp', 'dont']
+		type: 0,
+		options: ['Imgur', 'FTP', 'none']
 	}
 });
 
@@ -88,6 +89,10 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 			win.show();
 		});
 
+		ipc.once('ready-for-upload', () => {
+			uploadImage();
+		})
+
 		return win;
 	});
 }
@@ -104,7 +109,7 @@ function getBounds(callback) {
 		alwaysOnTop: true,
 		skipTaskbar: true,
 		resizeable: false,
-		show: false,
+		show: false
 	});
 
 	const windowPath = path.join('file://', __dirname, 'windows/snippet.html');
@@ -122,6 +127,30 @@ function getBounds(callback) {
 	win.webContents.openDevTools();
 }
 
+// Uploads preview image to chosen platform
+function uploadImage() {
+	// Get the upload settings
+	settings.get('upload').then(val => {
+		if(val.type == 0) imgurUpload();
+	});
+}
+
+// Uploads an image to imgur
+function imgurUpload() {
+	imgur.setClientId('eaf02dd0ebc4299');
+	imgur.uploadFile('./assets/temp.png').then(json => {
+		console.log(json.data.link);
+		// Make this a setting
+		electron.clipboard.writeText(json.data.link);
+		// Make this a setting
+		electron.shell.openExternal(json.data.link);
+
+	}).catch(err => {
+		console.error(err.message);
+	});
+}
+
+// Saves the screenshot to a specified location
 function saveFile() {
 	electron.dialog.showSaveDialog({title: 'Save File', defaultPath: os.homedir()+'/.png'}, filename => {
 		// Check to see if it is undefine (User closed dialog window)
@@ -131,6 +160,8 @@ function saveFile() {
 	});
 }
 
+
+// Copies preview image to clipboard.
 function copyImage() {
 	electron.clipboard.writeImage('./assets/temp.png');
 }
