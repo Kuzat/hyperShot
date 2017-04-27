@@ -27,7 +27,7 @@
     "electron-debug": "^1.0.0",
     "electron-settings": "^2.2.2",
     "imgur": "^0.2.1",
-    "screenshot-node": "^1.1.1"
+    "screenshot-node": "^1.2.0"
   },
   "devDependencies": {
     "devtron": "^1.1.0",

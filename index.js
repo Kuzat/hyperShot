@@ -191,7 +191,7 @@ app.on('ready', () => {
 	if (!shouldQuit) {
 		size = {
 			width: electron.screen.getPrimaryDisplay().bounds.width * 0.65,
-			height: electron.screen.getPrimaryDisplay().bounds.height * 0.70
+			height: electron.screen.getPrimaryDisplay().bounds.height * 0.80
 		};
 	}
 
