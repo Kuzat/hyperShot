@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	canvas.height = screen.getPrimaryDisplay().bounds.height;
 
 	// Fill the canvas.
-	context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+	context.fillStyle = 'rgba(0, 0, 0, 0.3)';
 	context.fillRect(0, 0, canvas.width, canvas.height);
 
 	document.onmousedown = event => {

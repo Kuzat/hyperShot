@@ -2,10 +2,10 @@
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
-const imgur = require('imgur');
 const electron = require('electron');
 const settings = require('electron-settings');
 const screenshot = require('screenshot-node');
+const imgur = require('imgur');
 
 const globalShortcut = electron.globalShortcut;
 const ipc = electron.ipcMain;
@@ -38,6 +38,7 @@ const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
 	// Someone tried to run a second instance
 	// Should maybe open the main window or flash the tray to
 	// indicate that there allready is an app running.
+	console.log(workingDirectory);
 });
 
 if (shouldQuit) {
@@ -91,7 +92,7 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 
 		ipc.once('ready-for-upload', () => {
 			uploadImage();
-		})
+		});
 
 		return win;
 	});
@@ -131,7 +132,9 @@ function getBounds(callback) {
 function uploadImage() {
 	// Get the upload settings
 	settings.get('upload').then(val => {
-		if(val.type == 0) imgurUpload();
+		if (val.type === 0) {
+			imgurUpload();
+		}
 	});
 }
 
@@ -144,7 +147,6 @@ function imgurUpload() {
 		electron.clipboard.writeText(json.data.link);
 		// Make this a setting
 		electron.shell.openExternal(json.data.link);
-
 	}).catch(err => {
 		console.error(err.message);
 	});
@@ -152,14 +154,13 @@ function imgurUpload() {
 
 // Saves the screenshot to a specified location
 function saveFile() {
-	electron.dialog.showSaveDialog({title: 'Save File', defaultPath: os.homedir()+'/.png'}, filename => {
+	electron.dialog.showSaveDialog({title: 'Save File', defaultPath: os.homedir() + '/.png'}, filename => {
 		// Check to see if it is undefine (User closed dialog window)
-		if(filename != undefined) {
-		fs.createReadStream('./assets/temp.png').pipe(fs.createWriteStream(filename));
+		if (filename !== undefined) {
+			fs.createReadStream('./assets/temp.png').pipe(fs.createWriteStream(filename));
 		}
 	});
 }
-
 
 // Copies preview image to clipboard.
 function copyImage() {
@@ -259,22 +260,21 @@ app.on('ready', () => {
 				{
 					label: 'Report an Issue...',
 					click() {
-						electron.shell.openExternal("https://github.com/Kuzat/hyperdesktopjs/issues/new")
+						electron.shell.openExternal('https://github.com/Kuzat/hyperdesktopjs/issues/new');
 					}
 				},
 				{
 					label: 'About Hyperdesktopjs',
 					click() {
-						electron.shell.openExternal("https://github.com/Kuzat/hyperdesktopjs");
+						electron.shell.openExternal('https://github.com/Kuzat/hyperdesktopjs');
 					}
 				}
 			]
 		}
-	])
+	]);
 
 	// Set the application menu
 	Menu.setApplicationMenu(appMenu);
-
 
 	// Set the context menu for the tray icon
 	appIcon.setContextMenu(contextMenu);
