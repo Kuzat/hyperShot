@@ -13,7 +13,7 @@ const Menu = electron.Menu;
 const Tray = electron.Tray;
 
 // Seting default settings
-settings.defaults({
+settings.setAll({
 	hotkeys: {
 		screenshot: 'CommandOrControl+Shift+3',
 		selectiveScreenshot: 'CommandOrControl+Shift+4',
@@ -131,11 +131,9 @@ function getBounds(callback) {
 // Uploads preview image to chosen platform
 function uploadImage() {
 	// Get the upload settings
-	settings.get('upload').then(val => {
-		if (val.type === 0) {
-			imgurUpload();
-		}
-	});
+	if (settings.get('upload.type') === 0) {
+		imgurUpload();
+	}
 }
 
 // Uploads an image to imgur
@@ -280,21 +278,20 @@ app.on('ready', () => {
 	appIcon.setContextMenu(contextMenu);
 
 	// Set the global hotkeys to the different screenshot methods
-	settings.get('hotkeys').then(val => {
-		// Full screenshot
-		globalShortcut.register(val.screenshot, () => {
-			takeScreenshot(size);
-		});
-		// Screenshot of selected area
-		globalShortcut.register(val.selectiveScreenshot, () => {
-			getBounds(bounds => {
-				takeScreenshot(size, bounds);
-			});
-		});
-		// TODO: Screenshot of active window
-/*		globalShortcut.register(val.windowScreenshot, () => {
-			takeScreenshot(size);
-		});
-*/
+	const val = settings.get('hotkeys');
+	// Full screenshot
+	globalShortcut.register(val.screenshot, () => {
+		takeScreenshot(size);
 	});
+	// Screenshot of selected area
+	globalShortcut.register(val.selectiveScreenshot, () => {
+		getBounds(bounds => {
+			takeScreenshot(size, bounds);
+		});
+	});
+	// TODO: Screenshot of active window
+/*		globalShortcut.register(val.windowScreenshot, () => {
+		takeScreenshot(size);
+	});
+*/
 });
