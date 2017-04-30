@@ -1,10 +1,10 @@
 {
-  "name": "HyperdesktopJs",
-  "productName": "HyperdesktopJs",
-  "version": "0.0.2",
-  "description": "",
+  "name": "hyperShot",
+  "productName": "hyperShot",
+  "version": "0.2.3",
+  "description": "A powerfull cross-platform screenshoting tool",
   "license": "MIT",
-  "repository": "",
+  "repository": "https://github.com/Kuzat/hyperShot",
   "author": {
     "name": "Vegard Bjørsvik",
     "email": "vegardbjr@gmai.com",
@@ -21,7 +21,14 @@
   ],
   "keywords": [
     "electron-app",
-    "electron"
+    "electron",
+    "screenshot",
+    "hyperShot",
+    "cross-platform",
+    "OS X",
+    "MAC OS",
+    "Windows",
+    "Linux"
   ],
   "dependencies": {
     "electron-debug": "^1.0.0",
