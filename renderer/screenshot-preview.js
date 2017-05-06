@@ -2,8 +2,13 @@ const ipc = require('electron').ipcRenderer;
 const remote = require('electron').remote;
 const clipboard = require('electron').clipboard;
 
+const tempName = remote.getCurrentWindow().tempName;
+
 document.addEventListener('DOMContentLoaded', () => {
 	let ctrlDown = false;
+
+	document.getElementById('preview-image').src = '../assets/temp/' + tempName;
+
 	ipc.send('ready-for-show', true);
 
 	// Handle button clicks
@@ -14,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Upload button upload to selected upload service
 	document.getElementById('upload-btn').addEventListener('click', () => {
-		ipc.send('ready-for-upload');
-		remote.getCurrentWindow().hide();
+		ipc.send('ready-for-upload-' + tempName, remote.getCurrentWindow());
+		remote.getCurrentWindow().close();
 	});
 
 	// Keybinding to copy image
@@ -25,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		if (ctrlDown && event.keyCode === 67) {
-			clipboard.writeImage('./assets/temp.png');
+			clipboard.writeImage('./assets/temp/' + tempName);
 		}
 	});
 
