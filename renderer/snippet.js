@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	let x2;
 	let y2;
 
+	const scaleFactor = screen.getPrimaryDisplay().scaleFactor;
+
 	// Setup the canvas to fit the screen.
 	canvas.width = screen.getPrimaryDisplay().bounds.width;
 	canvas.height = screen.getPrimaryDisplay().bounds.height;
@@ -51,7 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.log('Mouse up');
 		// Mouse no longer down
 		mouseDown = false;
-		ipc.send('ready-for-bounds', {x: x1, y: y1, width: x2 - x1, height: y2 - y1});
+		const bounds = {
+			x: Math.round(x1 * scaleFactor),
+			y: Math.round(y1 * scaleFactor),
+			width: Math.round((x2 - x1) * scaleFactor),
+			height: Math.round((y2 - y1) * scaleFactor)
+		};
+		ipc.send('ready-for-bounds', bounds);
 		remote.getCurrentWindow().close();
 	};
 });
