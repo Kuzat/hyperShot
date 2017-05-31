@@ -8,17 +8,23 @@
   "author": {
     "name": "Vegard Bjørsvik",
     "email": "vegardbjr@gmai.com",
-    "url": ""
+    "url": "https://github.com/Kuzat"
   },
   "scripts": {
     "test": "xo",
     "start": "electron . --enable-transparent-visuals --disable-gpu",
-    "build": "electron-packager . --out=dist --asar --overwrite --all"
+    "dist": "build"
   },
   "files": [
     "index.js",
     "index.html"
   ],
+  "build": {
+    "appId": "com.kuzat.hyperShot",
+    "mac": {
+      "category": "public.app-category.productivity"
+    }
+  },
   "keywords": [
     "electron-app",
     "electron",
@@ -39,7 +45,7 @@
   "devDependencies": {
     "devtron": "^1.1.0",
     "electron": "^1.6.7",
-    "electron-packager": "^8.0.0",
+    "electron-builder": "^18.3.0",
     "electron-rebuild": "^1.5.7",
     "xo": "^0.18.1"
   },
