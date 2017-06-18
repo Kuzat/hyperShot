@@ -16,7 +16,7 @@ const app = electron.app;
 let appIcon = null;
 
 // Adds debug features like hotkeys for triggering dev tools and reload
-require('electron-debug')();
+//require('electron-debug')();
 
 // Prevent window being garbage collected
 let mainWindow;
@@ -221,6 +221,11 @@ app.on('ready', () => {
 			options: ['Imgur', 'FTP', 'none']
 		}
 	});
+
+	// Check if temp directory exist if not we need to create it.
+	if (!fs.existsSync('./assets/temp')) {
+		fs.mkdirSync('./assets/temp');
+	}
 
 	mainWindow = createMainWindow();
 

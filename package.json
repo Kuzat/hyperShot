@@ -31,17 +31,17 @@
     "Linux"
   ],
   "dependencies": {
-    "electron-debug": "^1.0.0",
-    "electron-settings": "^3.0.14",
-    "imgur": "^0.2.1",
-    "screenshot-node": "^1.2.0"
+    "electron-debug": "1.0.X",
+    "electron-settings": "3.0.X",
+    "imgur": "0.2.X",
+    "screenshot-node": "1.2.X"
   },
   "devDependencies": {
-    "devtron": "^1.1.0",
-    "electron": "^1.6.7",
-    "electron-packager": "^8.0.0",
-    "electron-rebuild": "^1.5.7",
-    "xo": "^0.18.1"
+    "devtron": "1.1.X",
+    "electron": "1.6.X",
+    "electron-packager": "8.0.X",
+    "electron-rebuild": "1.5.X",
+    "xo": "0.18.X"
   },
   "xo": {
     "esnext": true,
