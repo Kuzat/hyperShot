@@ -40,7 +40,8 @@
     "electron-debug": "1.0.X",
     "electron-settings": "3.0.X",
     "imgur": "0.2.X",
-    "screenshot-node": "1.2.X"
+    "screenshot-node": "1.2.X",
+    "tmp": "^0.0.31"
   },
   "devDependencies": {
     "devtron": "1.1.X",

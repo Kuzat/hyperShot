@@ -5,7 +5,7 @@ const imgur = require('imgur');
 // Uploads an image to imgur
 function imgurUpload(tempName) {
 	imgur.setClientId('eaf02dd0ebc4299');
-	imgur.uploadFile('./assets/temp/' + tempName).then(json => {
+	imgur.uploadFile(tempName).then(json => {
 		console.log(json.data.link);
 		// Make this a setting
 		electron.clipboard.writeText(json.data.link);

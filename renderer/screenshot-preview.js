@@ -7,7 +7,7 @@ const tempName = remote.getCurrentWindow().tempName;
 document.addEventListener('DOMContentLoaded', () => {
 	let ctrlDown = false;
 
-	document.getElementById('preview-image').src = '../assets/temp/' + tempName;
+	document.getElementById('preview-image').src = tempName;
 
 	ipc.send('ready-for-show', true);
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		if (ctrlDown && event.keyCode === 67) {
-			clipboard.writeImage('./assets/temp/' + tempName);
+			clipboard.writeImage(tempName);
 		}
 	});
 
