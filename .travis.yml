@@ -1,12 +1,18 @@
+osx_image: xcode8.3
+
+sudo: required
+dist: trusty
+
 language: node_js
 node_js:
   - "7"
 install:
-  - npm install
+  - yarn install
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 script:
-  - npm test
+  - yarn test
+  - yarn dist-travis
 env:
   - CXX=g++-4.8
 addons:
@@ -19,3 +25,10 @@ addons:
 cache:
   directories:
     - node_modules
+    - $HOME/.electron
+    - $HOME/.cache
+
+matrix:
+    include:
+        - os: osx
+        - os: linux

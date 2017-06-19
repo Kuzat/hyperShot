@@ -195,7 +195,7 @@ function getBounds(callback) {
 		callback(arg);
 	});
 
-	win.webContents.openDevTools();
+	// win.webContents.openDevTools();
 }
 
 // ######### HANDLE APP EVENTS ###########

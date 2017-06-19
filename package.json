@@ -13,6 +13,8 @@
   "scripts": {
     "test": "xo",
     "start": "electron . --enable-transparent-visuals --disable-gpu",
+	"dist": "build --linux deb --win",
+	"dist-travis": "build --linux deb --mac",
     "dist-linux": "build --linux deb",
 	"dist-win": "build --win"
   },
