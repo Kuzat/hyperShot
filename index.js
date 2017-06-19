@@ -18,6 +18,9 @@ const Tray = electron.Tray;
 const app = electron.app;
 let appIcon = null;
 
+app.commandLine.appendSwitch('enable-transparent-visuals');
+app.commandLine.appendSwitch('disable-gpu');
+
 // Adds debug features like hotkeys for triggering dev tools and reload
 // require('electron-debug')();
 
@@ -195,7 +198,7 @@ function getBounds(callback) {
 		callback(arg);
 	});
 
-	// win.webContents.openDevTools();
+	// Win.webContents.openDevTools();
 }
 
 // ######### HANDLE APP EVENTS ###########
