@@ -19,3 +19,12 @@ build_script:
   - yarn dist-win
 
 test: off
+
+deploy:
+    description: 'New windows release'
+    provider: Github
+    auth_token:
+        secure: LpmAbg3e3SvnGegFlPZzOYrdFewjbk+LwroV7oCEqvaLJyqUm1qqW7cyFWVlJrGk
+    prerelease: true
+    on:
+        branch: automatic_build

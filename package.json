@@ -15,7 +15,7 @@
     "start": "electron . --enable-transparent-visuals --disable-gpu",
 	"dist": "build",
     "dist-linux": "build --linux deb",
-	"dist-win": "build --win --publish=never"
+	"dist-win": "build --win"
   },
   "files": [
     "index.js",
