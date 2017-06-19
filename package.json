@@ -1,7 +1,7 @@
 {
   "name": "hyperShot",
   "productName": "hyperShot",
-  "version": "0.2.3",
+  "version": "0.3.0-a",
   "description": "A powerfull cross-platform screenshoting tool",
   "license": "MIT",
   "repository": "https://github.com/Kuzat/hyperShot",
@@ -13,7 +13,8 @@
   "scripts": {
     "test": "xo",
     "start": "electron . --enable-transparent-visuals --disable-gpu",
-    "dist": "build"
+    "dist-linux": "build --linux deb",
+	"dist-win": "build --win"
   },
   "files": [
     "index.js",
@@ -22,7 +23,10 @@
   "build": {
     "appId": "com.kuzat.hyperShot",
     "mac": {
-      "category": "public.app-category.productivity"
+        "category": "public.app-category.productivity"
+    },
+    "linux": {
+        "target": ["deb"]
     }
   },
   "keywords": [

@@ -5,8 +5,10 @@ const fs = require('fs');
 const electron = require('electron');
 const settings = require('electron-settings');
 const screenshot = require('screenshot-node');
-const upload = require('./upload');
 const tmp = require('tmp');
+
+// Local
+const upload = require('./upload');
 
 const globalShortcut = electron.globalShortcut;
 const ipc = electron.ipcMain;
@@ -17,7 +19,7 @@ const app = electron.app;
 let appIcon = null;
 
 // Adds debug features like hotkeys for triggering dev tools and reload
-//require('electron-debug')();
+// require('electron-debug')();
 
 // Prevent window being garbage collected
 let mainWindow;
@@ -43,7 +45,7 @@ function createMainWindow() {
 		width: 0,
 		height: 0,
 		show: false,
-		icon: './assets/64x64.png'
+		icon: path.join(__dirname, '/assets/64x64.png')
 	});
 
 	win.on('closed', onClosed);
@@ -53,8 +55,10 @@ function createMainWindow() {
 
 // Take screenshot
 function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
-	tmp.file({postfix: '', keep: true}, function _tempFileCreated(err, tmpath, fd, cleanupCallback) {
-		if (err) throw err;
+	tmp.file({postfix: '', keep: true}, (err, tmpath, fd, cleanupCallback) => {
+		if (err) {
+			throw err;
+		}
 
 		screenshot.saveScreenshot(bounds.x, bounds.y, bounds.width, bounds.height, tmpath, err => {
 			if (err) {
@@ -131,7 +135,7 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 				show: false,
 				width: size.width,
 				height: size.height,
-				icon: './assets/64x64.png'
+				icon: path.join(__dirname, '/assets/64x64.png')
 			});
 
 			win.tempName = tmpath;
@@ -141,7 +145,7 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 			win.loadURL(windowPath);
 
 			// DEBUG
-			win.webContents.openDevTools();
+			// win.webContents.openDevTools();
 
 			ipc.once('ready-for-show', () => {
 				win.show();
@@ -237,7 +241,7 @@ app.on('ready', () => {
 	}
 
 	// Tray icon Menu. Click functions needs to be implemented
-	appIcon = new Tray('./assets/64x64.png');
+	appIcon = new Tray(path.join(__dirname, '/assets/64x64.png'));
 	const contextMenu = Menu.buildFromTemplate([
 		{label: 'Open Window'},
 		{
