@@ -23,6 +23,7 @@ addons:
       - g++-4.8
       - xvfb
 cache:
+  yarn: true
   directories:
     - node_modules
     - $HOME/.electron
