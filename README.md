@@ -4,6 +4,8 @@
 
 hyperShot is a cross-platform screenshot tool. Built on modern web technologies.  
 
+This project adheres to the Contributor Covenant code of conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to vegardbjr@gmail.com.
+
 ## Features
 *  Fast screenshots
 *  Automatic upload
