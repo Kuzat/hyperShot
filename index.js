@@ -58,7 +58,7 @@ function createMainWindow() {
 // Take screenshot
 function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 	const tempDir = os.tmpdir();
-	const tmpath = path.join(tempDir, ""+Date.now());
+	const tmpath = path.join(tempDir, String(Date.now()));
 
 	screenshot.saveScreenshot(bounds.x, bounds.y, bounds.width, bounds.height, tmpath, err => {
 		if (err) {
