@@ -30,3 +30,29 @@ footer {
     background-color: #efefef;
     text-align: left;
 }
+
+.center {
+    margin: auto;
+    display: block;
+    text-align: center;
+	width: 30%;
+}
+
+#logo {
+    margin-top: 20%;
+}
+
+#version-number {
+	margin-top: 2%;
+	color: #636a6f;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#version-number:hover {
+	color: #818a90;
+}
+
+#about {
+	background-color: rgb(42, 65, 80);
+}

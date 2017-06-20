@@ -52,12 +52,33 @@ function createMainWindow() {
 		width: 0,
 		height: 0,
 		show: false,
-		icon: path.join(__dirname, '/assets/64x64.png')
+		icon: path.join(__dirname, '/assets/64x64.png'),
+		skipTaskbar: true
 	});
 
 	win.on('closed', onClosed);
 
 	return win;
+}
+
+function createAboutWindow() {
+	let win = new electron.BrowserWindow({
+		width: electron.screen.getPrimaryDisplay().bounds.width*0.2,
+		height: electron.screen.getPrimaryDisplay().bounds.width*0.15,
+		show: false,
+		icon: path.join(__dirname, '/assets/64x64.png')
+	})
+
+	const windowPath = path.join('file://', __dirname, 'windows/about.html');
+	win.loadURL(windowPath);
+
+	win.on('closed', () => {
+		win = null;
+	});
+
+	win.on('ready-to-show', () => {
+		win.show();
+	});
 }
 
 // Take screenshot
@@ -126,9 +147,7 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 					},
 					{
 						label: 'About Hyperdesktopjs',
-						click() {
-							electron.shell.openExternal('https://github.com/Kuzat/hyperdesktopjs');
-						}
+						click: createAboutWindow
 					}
 				]
 			}
@@ -258,7 +277,10 @@ app.on('ready', () => {
 		},
 		{type: 'separator'},
 		{label: 'Settings'},
-		{label: 'About'},
+		{
+			label: 'About',
+			click: createAboutWindow
+		},
 		{label: 'Quit', role: 'quit'}
 	]);
 
@@ -304,9 +326,7 @@ app.on('ready', () => {
 				},
 				{
 					label: 'About Hyperdesktopjs',
-					click() {
-						electron.shell.openExternal('https://github.com/Kuzat/hyperdesktopjs');
-					}
+					click: createAboutWindow
 				}
 			]
 		}
