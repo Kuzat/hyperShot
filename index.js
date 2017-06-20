@@ -17,8 +17,7 @@ const Tray = electron.Tray;
 const app = electron.app;
 let appIcon = null;
 
-app.commandLine.appendSwitch('enable-transparent-visuals');
-app.commandLine.appendSwitch('disable-gpu');
+app.disableHardwareAcceleration();
 
 // Adds debug features like hotkeys for triggering dev tools and relad
 // require('electron-debug')();
@@ -328,7 +327,8 @@ app.on('ready', () => {
 	// Screenshot of selected area
 	globalShortcut.register(val.selectiveScreenshot, () => {
 		getBounds(bounds => {
-			takeScreenshot(size, bounds);
+			// Needs a timeout to let the getBounds window close
+			setTimeout(takeScreenshot, 200, size, bounds);
 		});
 	});
 	// TODO: Screenshot of active window
