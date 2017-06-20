@@ -4,15 +4,16 @@ dist: trusty
 language: node_js
 node_js:
   - "7"
+
 install:
   - yarn install
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
 script:
   - yarn test
   - yarn dist
-env:
-  - CXX=g++-4.8
+
 addons:
   apt:
     sources:
@@ -31,13 +32,21 @@ cache:
     - $HOME/.cache
 
 matrix:
-    include:
-        - os: osx
-        osx_image: xcode8
-        env:
-            - MATRIX_EVAL="brew install gcc && CC=gcc-6 && CXX=g++-6"
+  include:
+    - os: osx
+      osx_image: xcode8
+      env:
+        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
-        - os: linux
+    - os: osx
+      osx_image: xcode8
+      env:
+        - MATRIX_EVAL="brew install gcc5 && CC=gcc-5 && CXX=g++-5"
+
+    - os: osx
+      osx_image: xcode8
+      env:
+        - MATRIX_EVAL="brew install gcc && CC=gcc-6 && CXX=g++-6"
 
 before_install:
     - eval "${MATRIX_EVAL}"
