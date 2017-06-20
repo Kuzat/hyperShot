@@ -5,8 +5,6 @@ branches:
   - master
   - pre-release
 
-skip_non_tags: true
-
 platform:
   - x64
 
