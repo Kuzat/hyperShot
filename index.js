@@ -63,11 +63,11 @@ function createMainWindow() {
 
 function createAboutWindow() {
 	let win = new electron.BrowserWindow({
-		width: electron.screen.getPrimaryDisplay().bounds.width*0.2,
-		height: electron.screen.getPrimaryDisplay().bounds.width*0.15,
+		width: electron.screen.getPrimaryDisplay().bounds.width * 0.2,
+		height: electron.screen.getPrimaryDisplay().bounds.width * 0.15,
 		show: false,
 		icon: path.join(__dirname, '/assets/64x64.png')
-	})
+	});
 
 	const windowPath = path.join('file://', __dirname, 'windows/about.html');
 	win.loadURL(windowPath);

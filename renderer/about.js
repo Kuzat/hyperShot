@@ -6,6 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	const versionLink = document.getElementById('version-number');
 	versionLink.text = versionNumber;
 	versionLink.addEventListener('click', () => {
-		shell.openExternal('https://github.com/Kuzat/hyperShot/releases/tag/v'+versionNumber);
+		shell.openExternal('https://github.com/Kuzat/hyperShot/releases/tag/v' + versionNumber);
 	});
 });
