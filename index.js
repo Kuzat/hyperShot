@@ -5,7 +5,6 @@ const fs = require('fs');
 const electron = require('electron');
 const settings = require('electron-settings');
 const screenshot = require('screenshot-node');
-const tmp = require('tmp');
 
 // Local
 const upload = require('./upload');
@@ -21,7 +20,7 @@ let appIcon = null;
 app.commandLine.appendSwitch('enable-transparent-visuals');
 app.commandLine.appendSwitch('disable-gpu');
 
-// Adds debug features like hotkeys for triggering dev tools and reload
+// Adds debug features like hotkeys for triggering dev tools and relad
 // require('electron-debug')();
 
 // Prevent window being garbage collected
@@ -58,116 +57,113 @@ function createMainWindow() {
 
 // Take screenshot
 function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
-	tmp.file({postfix: '', keep: true}, (err, tmpath, fd, cleanupCallback) => {
+	const tempDir = os.tmpdir();
+	const tmpath = path.join(tempDir, ""+Date.now());
+
+	screenshot.saveScreenshot(bounds.x, bounds.y, bounds.width, bounds.height, tmpath, err => {
 		if (err) {
-			throw err;
+			console.log(err);
+		}
+		// Saves the screenshot to a specified location
+		function saveFile() {
+			electron.dialog.showSaveDialog({title: 'Save File', defaultPath: os.homedir() + '/.png'}, filename => {
+				// Check to see if it is undefine (User closed dialog window)
+				if (filename !== undefined) {
+					fs.createReadStream(tmpath).pipe(fs.createWriteStream(filename));
+				}
+			});
 		}
 
-		screenshot.saveScreenshot(bounds.x, bounds.y, bounds.width, bounds.height, tmpath, err => {
-			if (err) {
-				console.log(err);
-			}
-			// Saves the screenshot to a specified location
-			function saveFile() {
-				electron.dialog.showSaveDialog({title: 'Save File', defaultPath: os.homedir() + '/.png'}, filename => {
-					// Check to see if it is undefine (User closed dialog window)
-					if (filename !== undefined) {
-						fs.createReadStream(tmpath).pipe(fs.createWriteStream(filename));
+		// Application Menu
+		const appMenu = Menu.buildFromTemplate([
+			{
+				label: 'File',
+				submenu: [
+					{
+						label: 'Save',
+						accelerator: 'CommandOrControl+S',
+						click: saveFile
+					},
+					{
+						label: 'Save As...',
+						click: saveFile
+					},
+					{
+						label: 'Close Window',
+						role: 'close'
 					}
-				});
+				]
+			},
+			{
+				label: 'Edit',
+				submenu: [
+					{
+						label: 'Copy',
+						accelerator: 'CommandOrControl+C',
+						click: () => {
+							electron.clipboard.writeImage(tmpath);
+						}
+					}
+				]
+			},
+			{
+				label: 'Help',
+				submenu: [
+					{
+						label: 'Version ' + app.getVersion(),
+						enabled: false
+					},
+					{
+						label: 'Report an Issue...',
+						click() {
+							electron.shell.openExternal('https://github.com/Kuzat/hyperdesktopjs/issues/new');
+						}
+					},
+					{
+						label: 'About Hyperdesktopjs',
+						click() {
+							electron.shell.openExternal('https://github.com/Kuzat/hyperdesktopjs');
+						}
+					}
+				]
 			}
+		]);
 
-			// Application Menu
-			const appMenu = Menu.buildFromTemplate([
-				{
-					label: 'File',
-					submenu: [
-						{
-							label: 'Save',
-							accelerator: 'CommandOrControl+S',
-							click: saveFile
-						},
-						{
-							label: 'Save As...',
-							click: saveFile
-						},
-						{
-							label: 'Close Window',
-							role: 'close'
-						}
-					]
-				},
-				{
-					label: 'Edit',
-					submenu: [
-						{
-							label: 'Copy',
-							accelerator: 'CommandOrControl+C',
-							click: () => {
-								electron.clipboard.writeImage(tmpath);
-							}
-						}
-					]
-				},
-				{
-					label: 'Help',
-					submenu: [
-						{
-							label: 'Version ' + app.getVersion(),
-							enabled: false
-						},
-						{
-							label: 'Report an Issue...',
-							click() {
-								electron.shell.openExternal('https://github.com/Kuzat/hyperdesktopjs/issues/new');
-							}
-						},
-						{
-							label: 'About Hyperdesktopjs',
-							click() {
-								electron.shell.openExternal('https://github.com/Kuzat/hyperdesktopjs');
-							}
-						}
-					]
-				}
-			]);
-
-			// Creating the window
-			let win = new electron.BrowserWindow({
-				title: 'Preview window',
-				show: false,
-				width: size.width,
-				height: size.height,
-				icon: path.join(__dirname, '/assets/64x64.png')
-			});
-
-			win.tempName = tmpath;
-			win.setMenu(appMenu);
-
-			const windowPath = path.join('file://', __dirname, 'windows/screenshot-preview.html');
-			win.loadURL(windowPath);
-
-			// DEBUG
-			// win.webContents.openDevTools();
-
-			ipc.once('ready-for-show', () => {
-				win.show();
-			});
-
-			const uploadFunc = () => {
-				upload(tmpath);
-			};
-
-			ipc.once('ready-for-upload-' + tmpath, uploadFunc);
-
-			win.on('closed', () => {
-				ipc.removeListener('ready-for-upload', uploadFunc);
-				win = null;
-				cleanupCallback();
-			});
-
-			return win;
+		// Creating the window
+		let win = new electron.BrowserWindow({
+			title: 'Preview window',
+			show: false,
+			width: size.width,
+			height: size.height,
+			icon: path.join(__dirname, '/assets/64x64.png')
 		});
+
+		win.tempName = tmpath;
+		win.setMenu(appMenu);
+
+		const windowPath = path.join('file://', __dirname, 'windows/screenshot-preview.html');
+		win.loadURL(windowPath);
+
+		// DEBUG
+		// win.webContents.openDevTools();
+
+		ipc.once('ready-for-show', () => {
+			win.show();
+		});
+
+		const uploadFunc = () => {
+			upload(tmpath);
+		};
+
+		ipc.once('ready-for-upload-' + tmpath, uploadFunc);
+
+		win.on('closed', () => {
+			ipc.removeListener('ready-for-upload', uploadFunc);
+			win = null;
+			fs.unlinkSync(tmpath);
+		});
+
+		return win;
 	});
 }
 
