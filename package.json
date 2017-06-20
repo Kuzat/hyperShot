@@ -52,6 +52,7 @@
   ],
   "dependencies": {
     "electron-debug": "1.0.X",
+    "electron-is-dev": "^0.1.2",
     "electron-settings": "3.0.X",
     "imgur": "0.2.X",
     "screenshot-node": "1.2.X"

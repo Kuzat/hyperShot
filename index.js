@@ -5,6 +5,7 @@ const fs = require('fs');
 const electron = require('electron');
 const settings = require('electron-settings');
 const screenshot = require('screenshot-node');
+const isDev = require('electron-is-dev');
 
 // Local
 const upload = require('./upload');
@@ -17,10 +18,15 @@ const Tray = electron.Tray;
 const app = electron.app;
 let appIcon = null;
 
-app.disableHardwareAcceleration();
+// Needed to get transparent window on linux
+if (process.platform === 'Linux') {
+	app.disableHardwareAcceleration();
+}
 
-// Adds debug features like hotkeys for triggering dev tools and relad
-// require('electron-debug')();
+// Adds debug features like hotkeys for triggering dev tools and reload
+if (isDev) {
+	require('electron-debug')();
+}
 
 // Prevent window being garbage collected
 let mainWindow;
@@ -143,9 +149,6 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 		const windowPath = path.join('file://', __dirname, 'windows/screenshot-preview.html');
 		win.loadURL(windowPath);
 
-		// DEBUG
-		// win.webContents.openDevTools();
-
 		ipc.once('ready-for-show', () => {
 			win.show();
 		});
@@ -192,8 +195,6 @@ function getBounds(callback) {
 	ipc.once('ready-for-bounds', (event, arg) => {
 		callback(arg);
 	});
-
-	// Win.webContents.openDevTools();
 }
 
 // ######### HANDLE APP EVENTS ###########
@@ -218,8 +219,7 @@ app.on('ready', () => {
 	settings.setAll({
 		hotkeys: {
 			screenshot: 'CommandOrControl+Shift+3',
-			selectiveScreenshot: 'CommandOrControl+Shift+4',
-			windowScreenshot: 'CommandOrControl+Shift+5'
+			selectiveScreenshot: 'CommandOrControl+Shift+4'
 		},
 		upload: {
 			type: 0,
@@ -331,9 +331,4 @@ app.on('ready', () => {
 			setTimeout(takeScreenshot, 200, size, bounds);
 		});
 	});
-	// TODO: Screenshot of active window
-/*		globalShortcut.register(val.windowScreenshot, () => {
-		takeScreenshot(size);
-	});
-*/
 });
