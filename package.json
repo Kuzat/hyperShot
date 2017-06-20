@@ -13,9 +13,11 @@
   "scripts": {
     "test": "xo",
     "start": "electron . --enable-transparent-visuals --disable-gpu",
+	"release": "build --publish=always --draft=true --prerelease=true",
 	"dist": "build",
     "dist-linux": "build --linux deb",
-	"dist-win": "build --win --publish=always --draft=true --prerelease=true"
+	"dist-mac": "build --mac",
+	"dist-win": "build --win"
   },
   "files": [
     "index.js",
