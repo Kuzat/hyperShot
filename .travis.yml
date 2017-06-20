@@ -1,14 +1,19 @@
+sudo: required
+dist: trusty
+
 language: node_js
 node_js:
   - "7"
+
 install:
-  - npm install
+  - yarn install
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
 script:
-  - npm test
-env:
-  - CXX=g++-4.8
+  - yarn test
+  - yarn dist
+
 addons:
   apt:
     sources:
@@ -16,6 +21,24 @@ addons:
     packages:
       - g++-4.8
       - xvfb
+      - libgnome-keyring-dev
+      - libsecret-1-dev
+      - icnsutils
 cache:
+  yarn: true
   directories:
     - node_modules
+    - $HOME/.electron
+    - $HOME/.cache
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode8
+      env:
+        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+    - os: linux
+
+before_install:
+    - eval "${MATRIX_EVAL}"

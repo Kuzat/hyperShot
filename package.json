@@ -1,24 +1,44 @@
 {
   "name": "hyperShot",
   "productName": "hyperShot",
-  "version": "0.2.3",
+  "version": "0.3.0-a.3",
   "description": "A powerfull cross-platform screenshoting tool",
   "license": "MIT",
   "repository": "https://github.com/Kuzat/hyperShot",
   "author": {
     "name": "Vegard Bjørsvik",
     "email": "vegardbjr@gmai.com",
-    "url": ""
+    "url": "https://github.com/Kuzat"
   },
   "scripts": {
     "test": "xo",
     "start": "electron . --enable-transparent-visuals --disable-gpu",
-    "build": "electron-packager . --out=dist --asar --overwrite --all"
+    "release": "build --publish=always --draft=true --prerelease=true",
+    "dist": "build --publish=onTagOrDraft",
+    "dist-linux": "build --linux deb",
+    "dist-mac": "build --mac",
+    "dist-win": "build --win"
   },
   "files": [
     "index.js",
     "index.html"
   ],
+  "build": {
+    "appId": "com.kuzat.hyperShot",
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": [
+        "deb"
+      ]
+    },
+    "win": {
+      "publish": [
+        "github"
+      ]
+    }
+  },
   "keywords": [
     "electron-app",
     "electron",
@@ -31,17 +51,17 @@
     "Linux"
   ],
   "dependencies": {
-    "electron-debug": "^1.0.0",
-    "electron-settings": "^3.0.14",
-    "imgur": "^0.2.1",
-    "screenshot-node": "^1.2.0"
+    "electron-debug": "1.0.X",
+    "electron-settings": "3.0.X",
+    "imgur": "0.2.X",
+    "screenshot-node": "1.2.X"
   },
   "devDependencies": {
-    "devtron": "^1.1.0",
-    "electron": "^1.6.7",
-    "electron-packager": "^8.0.0",
-    "electron-rebuild": "^1.5.7",
-    "xo": "^0.18.1"
+    "devtron": "1.1.X",
+    "electron": "1.6.X",
+    "electron-builder": "^18.3.X",
+    "electron-rebuild": "1.5.X",
+    "xo": "0.18.X"
   },
   "xo": {
     "esnext": true,

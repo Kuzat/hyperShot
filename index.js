@@ -5,6 +5,8 @@ const fs = require('fs');
 const electron = require('electron');
 const settings = require('electron-settings');
 const screenshot = require('screenshot-node');
+
+// Local
 const upload = require('./upload');
 
 const globalShortcut = electron.globalShortcut;
@@ -15,8 +17,10 @@ const Tray = electron.Tray;
 const app = electron.app;
 let appIcon = null;
 
-// Adds debug features like hotkeys for triggering dev tools and reload
-require('electron-debug')();
+app.disableHardwareAcceleration();
+
+// Adds debug features like hotkeys for triggering dev tools and relad
+// require('electron-debug')();
 
 // Prevent window being garbage collected
 let mainWindow;
@@ -42,7 +46,7 @@ function createMainWindow() {
 		width: 0,
 		height: 0,
 		show: false,
-		icon: './assets/64x64.png'
+		icon: path.join(__dirname, '/assets/64x64.png')
 	});
 
 	win.on('closed', onClosed);
@@ -52,9 +56,10 @@ function createMainWindow() {
 
 // Take screenshot
 function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
-	const tempName = new Date().getTime();
+	const tempDir = os.tmpdir();
+	const tmpath = path.join(tempDir, String(Date.now()));
 
-	screenshot.saveScreenshot(bounds.x, bounds.y, bounds.width, bounds.height, './assets/temp/' + tempName, err => {
+	screenshot.saveScreenshot(bounds.x, bounds.y, bounds.width, bounds.height, tmpath, err => {
 		if (err) {
 			console.log(err);
 		}
@@ -63,7 +68,7 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 			electron.dialog.showSaveDialog({title: 'Save File', defaultPath: os.homedir() + '/.png'}, filename => {
 				// Check to see if it is undefine (User closed dialog window)
 				if (filename !== undefined) {
-					fs.createReadStream('./assets/temp/' + tempName).pipe(fs.createWriteStream(filename));
+					fs.createReadStream(tmpath).pipe(fs.createWriteStream(filename));
 				}
 			});
 		}
@@ -95,7 +100,7 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 						label: 'Copy',
 						accelerator: 'CommandOrControl+C',
 						click: () => {
-							electron.clipboard.writeImage('./assets/temp/' + tempName);
+							electron.clipboard.writeImage(tmpath);
 						}
 					}
 				]
@@ -129,32 +134,32 @@ function takeScreenshot(size, bounds = {x: 0, y: 0, width: 0, height: 0}) {
 			show: false,
 			width: size.width,
 			height: size.height,
-			icon: './assets/64x64.png'
+			icon: path.join(__dirname, '/assets/64x64.png')
 		});
 
-		win.tempName = tempName;
+		win.tempName = tmpath;
 		win.setMenu(appMenu);
 
 		const windowPath = path.join('file://', __dirname, 'windows/screenshot-preview.html');
 		win.loadURL(windowPath);
 
 		// DEBUG
-		win.webContents.openDevTools();
+		// win.webContents.openDevTools();
 
 		ipc.once('ready-for-show', () => {
 			win.show();
 		});
 
 		const uploadFunc = () => {
-			upload(tempName);
+			upload(tmpath);
 		};
 
-		ipc.once('ready-for-upload-' + tempName, uploadFunc);
+		ipc.once('ready-for-upload-' + tmpath, uploadFunc);
 
 		win.on('closed', () => {
 			ipc.removeListener('ready-for-upload', uploadFunc);
 			win = null;
-			fs.unlinkSync('./assets/temp/' + tempName);
+			fs.unlinkSync(tmpath);
 		});
 
 		return win;
@@ -188,7 +193,7 @@ function getBounds(callback) {
 		callback(arg);
 	});
 
-	win.webContents.openDevTools();
+	// Win.webContents.openDevTools();
 }
 
 // ######### HANDLE APP EVENTS ###########
@@ -234,7 +239,7 @@ app.on('ready', () => {
 	}
 
 	// Tray icon Menu. Click functions needs to be implemented
-	appIcon = new Tray('./assets/64x64.png');
+	appIcon = new Tray(path.join(__dirname, '/assets/64x64.png'));
 	const contextMenu = Menu.buildFromTemplate([
 		{label: 'Open Window'},
 		{
@@ -322,7 +327,8 @@ app.on('ready', () => {
 	// Screenshot of selected area
 	globalShortcut.register(val.selectiveScreenshot, () => {
 		getBounds(bounds => {
-			takeScreenshot(size, bounds);
+			// Needs a timeout to let the getBounds window close
+			setTimeout(takeScreenshot, 200, size, bounds);
 		});
 	});
 	// TODO: Screenshot of active window
