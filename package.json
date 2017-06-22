@@ -51,7 +51,7 @@
     "Linux"
   ],
   "dependencies": {
-    "electron-debug": "1.0.X",
+    "electron-debug": "~1.2.0",
     "electron-settings": "3.0.X",
     "imgur": "0.2.X",
     "screenshot-node": "1.2.X"
