@@ -21,7 +21,7 @@ const app = electron.app;
 let appIcon = null;
 
 // Needed to get transparent window on linux
-if (process.platform === 'Linux') {
+if (process.platform === 'linux') {
 	app.disableHardwareAcceleration();
 }
 
