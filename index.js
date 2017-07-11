@@ -236,6 +236,7 @@ function getBounds(callback) {
 		alwaysOnTop: true,
 		skipTaskbar: true,
 		resizeable: false,
+		movable: false,
 		show: false
 	});
 
