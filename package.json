@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "devtron": "1.1.X",
-    "electron": "1.6.X",
+    "electron": "~1.7.5",
     "electron-builder": "^19.6.1",
     "electron-rebuild": "1.5.X",
     "xo": "0.18.X"
