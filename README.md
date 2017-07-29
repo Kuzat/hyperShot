@@ -15,7 +15,7 @@ You can download the latest release from the [release page](https://github.com/K
 
 ## Development
 
-There is a mismatch with electron and screenshot-node. So we need to use electron-rebuild.
+There is a mismatch with electron and screenshot-node. So you need to use electron-rebuild.
 * npm install
 * ./node_modules/.bin/electron-rebuild
 
