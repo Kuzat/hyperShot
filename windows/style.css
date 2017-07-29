@@ -30,3 +30,96 @@ footer {
     background-color: #efefef;
     text-align: left;
 }
+
+h3 {
+	text-align: center;
+}
+
+p {
+	text-align: center;
+}
+
+li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	font-size: 1.3rem;
+	cursor: pointer;
+}
+
+li:hover {
+	opacity: 0.8
+}
+
+ul {
+	padding: 0;
+	margin: 0;
+}
+
+input {
+	margin: auto;
+	display: block;
+}
+
+select {
+	margin: auto;
+	display: block;
+}
+
+.center {
+    margin: auto;
+    display: block;
+    text-align: center;
+	width: 30%;
+}
+
+.divider {
+	border: 1px solid #808080;
+}
+
+.box {
+	color: #8c8c8c;
+}
+
+.browse-btn {
+	background-color: rgb(56, 58, 60);
+	border-color: #808080;
+	font-size: 1.2rem;
+	margin: auto;
+	display: block;
+	margin-top: 20px;
+}
+
+.folder-path {
+	display: block;
+	margin-left: 30%;
+}
+
+.browse-path {
+	display: inline;
+    height: 1.2rem;
+}
+
+#logo {
+    margin-top: 20%;
+}
+
+#version-number {
+	margin-top: 2%;
+	color: #636a6f;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#version-number:hover {
+	color: #818a90;
+}
+
+#about {
+	background-color: rgb(42, 65, 80);
+}
+
+#main {
+	background-color: rgb(42, 65, 80);
+}
