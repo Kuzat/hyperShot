@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script src="../renderer/settings.js"></script>
+	</head>
+	<body id="main">
+		<div class="box">
+			<h3>General</h3>
+			<p>Save screenshot to this folder</p>
+			<input type="checkbox" name="saveToFolder"/>
+			<div class="folder-path">
+				<input class="browse-path" name="folderPath" />
+				<button style="display: inline;" class="browse-btn" id="browse-btn">Browse</button>
+			</div>
+			<p>Copy link to clipboard after successful upload</p>
+			<input type="checkbox" name="copyToClipboard"/>
+			<p>Open link after successful upload</p>
+			<input type="checkbox" name="openLink" />
+			<h3>Uploading</h3>
+			<p>Upload type</p>
+			<select name="upload-types">
+				<option>Imgur</option>
+				<option disabled>FTP</option>
+				<option>Don't upload</option>
+			</select>
+			<h3>Hotkeys</h3>
+			<p>Fullscreen screenshot</p>
+			<input name="fullscreen" />
+			<p>Selective screenshot</p>
+			<input name="selective" />
+			<button class="browse-btn" id="reset-btn">Reset to default settings</button>
+		</div>
+	</body>
+</html>

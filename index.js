@@ -33,6 +33,7 @@ if (isDev) {
 // Prevent window being garbage collected
 let mainWindow;
 let mainRender = null;
+let settingsWindow = null;
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
 	// Someone tried to run a second instance
@@ -53,6 +54,10 @@ function onClosedMainWindow() {
 function onClosedMainRender() {
 	// Dereference the main render
 	mainRender = null;
+}
+
+function onClosedSettingsWindow() {
+	settingsWindow = null;
 }
 
 function createMainWindow() {
@@ -107,6 +112,32 @@ function createMainRenderWindow() {
 	win.upload = upload;
 
 	win.on('closed', onClosedMainRender);
+
+	win.on('ready-to-show', () => {
+		win.show();
+	});
+
+	return win;
+}
+
+function createSettingsWindow() {
+	if (settingsWindow !== null) {
+		settingsWindow.focus();
+		return;
+	}
+	const win = new electron.BrowserWindow({
+		width: electron.screen.getPrimaryDisplay().bounds.width * 0.2,
+		height: electron.screen.getPrimaryDisplay().bounds.width * 0.3,
+		show: false,
+		icon: path.join(__dirname, '/assets/64x64.png')
+	});
+
+	const windowPath = path.join('file://', __dirname, 'windows/settings.html');
+	win.loadURL(windowPath);
+
+	win.upload = upload;
+
+	win.on('closed', onClosedSettingsWindow);
 
 	win.on('ready-to-show', () => {
 		win.show();
@@ -272,7 +303,7 @@ app.on('activate', () => {
 
 app.on('ready', () => {
 	// Seting default settings
-	settings.setAll({
+	settings.set('default', {
 		hotkeys: {
 			screenshot: 'CommandOrControl+Shift+3',
 			selectiveScreenshot: 'CommandOrControl+Shift+4'
@@ -280,8 +311,20 @@ app.on('ready', () => {
 		upload: {
 			type: 0,
 			options: ['Imgur', 'FTP', 'none']
+		},
+		general: {
+			saveToFolder: {
+				active: false,
+				folder: ''
+			},
+			copyToClipboard: false,
+			openLink: true
 		}
 	});
+
+	if (settings.get('user') === undefined) {
+		settings.set('user', settings.get('default'));
+	}
 
 	mainWindow = createMainWindow();
 
@@ -318,7 +361,12 @@ app.on('ready', () => {
 			}
 		},
 		{type: 'separator'},
-		{label: 'Settings'},
+		{
+			label: 'Settings',
+			click() {
+				settingsWindow = createSettingsWindow();
+			}
+		},
 		{
 			label: 'About',
 			click: createAboutWindow
@@ -381,7 +429,7 @@ app.on('ready', () => {
 	appIcon.setContextMenu(contextMenu);
 
 	// Set the global hotkeys to the different screenshot methods
-	const val = settings.get('hotkeys');
+	const val = settings.get('user.hotkeys');
 	// Full screenshot
 	globalShortcut.register(val.screenshot, () => {
 		takeScreenshot(size);
