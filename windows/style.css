@@ -57,6 +57,16 @@ ul {
 	margin: 0;
 }
 
+input {
+	margin: auto;
+	display: block;
+}
+
+select {
+	margin: auto;
+	display: block;
+}
+
 .center {
     margin: auto;
     display: block;
@@ -72,10 +82,23 @@ ul {
 	color: #8c8c8c;
 }
 
-#browse-btn {
+.browse-btn {
 	background-color: rgb(56, 58, 60);
 	border-color: #808080;
 	font-size: 1.2rem;
+	margin: auto;
+	display: block;
+	margin-top: 20px;
+}
+
+.folder-path {
+	display: block;
+	margin-left: 30%;
+}
+
+.browse-path {
+	display: inline;
+    height: 1.2rem;
 }
 
 #logo {
