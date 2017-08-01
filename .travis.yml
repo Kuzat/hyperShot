@@ -42,3 +42,8 @@ matrix:
 
 before_install:
     - eval "${MATRIX_EVAL}"
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always

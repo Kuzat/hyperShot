@@ -5,6 +5,8 @@
 
 hyperShot is a cross-platform screenshot tool. Built on modern web technologies.  
 
+This project adheres to the Contributor Covenant code of conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to hypershot@sljupp.com.
+
 ## Features
 *  Fast screenshots
 *  Automatic upload
@@ -15,7 +17,7 @@ You can download the latest release from the [release page](https://github.com/K
 
 ## Development
 
-There is a mismatch with electron and screenshot-node. So we need to use electron-rebuild.
+There is a mismatch with electron and screenshot-node. So you need to use electron-rebuild.
 * npm install
 * ./node_modules/.bin/electron-rebuild
 
