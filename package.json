@@ -1,7 +1,7 @@
 {
   "name": "hyperShot",
   "productName": "hyperShot",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "A powerfull cross-platform screenshoting tool",
   "license": "MIT",
   "repository": "https://github.com/Kuzat/hyperShot",
@@ -51,6 +51,7 @@
     "Linux"
   ],
   "dependencies": {
+    "auto-launch": "^5.0.1",
     "electron-debug": "1.0.X",
     "electron-is-dev": "^0.1.2",
     "electron-settings": "3.0.X",

@@ -1,5 +1,6 @@
 const remote = require('electron').remote;
 const settings = require('electron-settings');
+const autostart = require('../autostart');
 
 const dialog = remote.dialog;
 
@@ -10,6 +11,7 @@ let openLink;
 let uploadTypes;
 let fullscreenHotkey;
 let selectiveHotkey;
+let autoLaunchSetting;
 
 function setupSettings() {
 	// Save to folder
@@ -22,6 +24,9 @@ function setupSettings() {
 
 	// Open link
 	openLink.checked = settings.get('user.general.openLink');
+
+	// Auto-launch
+	autoLaunchSetting.checked = settings.get('user.general.autoLaunch');
 
 	// Upload type
 	uploadTypes.selectedIndex = settings.get('user.upload.type');
@@ -42,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	uploadTypes = document.getElementsByName('upload-types')[0];
 	fullscreenHotkey = document.getElementsByName('fullscreen')[0];
 	selectiveHotkey = document.getElementsByName('selective')[0];
+	autoLaunchSetting = document.getElementsByName('autoLaunch')[0];
 
 	setupSettings();
 
@@ -63,6 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	openLink.addEventListener('change', event => {
 		console.log(event.target.checked);
 		settings.set('user.general.openLink', event.target.checked);
+	});
+
+	autoLaunchSetting.addEventListener('change', event => {
+		console.log(event.target.checked);
+		settings.set('user.general.autoLaunch', event.target.checked);
+		autostart.update();
 	});
 
 	uploadTypes.addEventListener('change', event => {
