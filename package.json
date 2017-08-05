@@ -51,7 +51,7 @@
     "Linux"
   ],
   "dependencies": {
-    "electron-debug": "1.3.X",
+    "electron-debug": "~1.4.0",
     "electron-is-dev": "0.1.X",
     "electron-settings": "3.0.X",
     "imgur": "0.2.X",
