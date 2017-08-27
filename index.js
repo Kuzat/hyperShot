@@ -9,6 +9,7 @@ const isDev = require('electron-is-dev');
 
 // New Upload object to handle upload and upload events
 const Upload = require('./upload');
+const autostart = require('./autostart');
 
 const upload = new Upload();
 
@@ -318,15 +319,24 @@ app.on('ready', () => {
 				folder: ''
 			},
 			copyToClipboard: false,
-			openLink: true
-		}
+			openLink: true,
+			autoLaunch: true
+		},
+		version: app.getVersion()
 	});
 
 	if (settings.get('user') === undefined) {
 		settings.set('user', settings.get('default'));
 	}
 
+	if (settings.get('user.version') !== app.getVersion()) {
+		settings.set('user', settings.get('default'));
+	}
+
 	mainWindow = createMainWindow();
+
+	// Update autostart settings
+	autostart.update();
 
 	// A suitable size for the preview window
 	let size = null;
