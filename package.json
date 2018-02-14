@@ -63,7 +63,7 @@
     "electron": "~1.7.5",
     "electron-builder": "^19.6.1",
     "electron-rebuild": "~1.6.0",
-    "xo": "0.18.X"
+    "xo": "~0.20.0"
   },
   "xo": {
     "esnext": true,
