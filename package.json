@@ -55,7 +55,7 @@
     "auto-launch": "5.0.X",
     "electron-is-dev": "0.1.X",
     "electron-settings": "~3.1.2",
-    "imgur": "0.2.X",
+    "imgur": "~0.3.1",
     "screenshot-node": "1.2.X"
   },
   "devDependencies": {
