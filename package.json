@@ -62,7 +62,7 @@
     "devtron": "1.1.X",
     "electron": "~1.8.2",
     "electron-builder": "^19.6.1",
-    "electron-rebuild": "~1.7.0",
+    "electron-rebuild": "~1.8.5",
     "xo": "0.18.X"
   },
   "xo": {
