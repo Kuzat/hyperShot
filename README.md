@@ -3,6 +3,9 @@
 [![AppVeyor](https://img.shields.io/appveyor/ci/kuzat/hypershot.svg)](https://ci.appveyor.com/project/Kuzat/hypershot)
 [![Greenkeeper badge](https://badges.greenkeeper.io/Kuzat/hyperShot.svg?token=4444eb545f63e769132534fa91bead3d1136e82f9665a7118368439381e3f4fa&ts=1493650907241)](https://greenkeeper.io/)
 
+# THIS PROJECT IS DISCONTINUED!
+## This project will be archived as I have no more time to maintain it and there are some major flaws with it. Please fork it if you would like to update it.
+
 hyperShot is a cross-platform screenshot tool. Built on modern web technologies.  
 
 This project adheres to the Contributor Covenant code of conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to hypershot@sljupp.com.
